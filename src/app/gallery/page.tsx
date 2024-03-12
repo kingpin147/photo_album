@@ -5,14 +5,19 @@ import { CloudinaryImage } from "./cloudinary-image";
 
 type SearchResult = {
   public_id: string;
+  tags: string[];
 };
 
 const GalleryPage = async () => {
-  const results = (await cloudinary.v2.search
+  const results = (
+    await cloudinary.v2.search
     .expression("resource_type:image")
     .sort_by("created_at", "desc")
+    .with_field("tags")
     .max_results(3)
     .execute()) as { resources: SearchResult[] };
+
+    console.log(results);
 
   return (
     <section>
@@ -26,9 +31,10 @@ const GalleryPage = async () => {
             <CloudinaryImage
             key={result.public_id}
             src={result.public_id}
+            publicId={result.public}
             width="400"
             height="300"
-            // alt="an image of nothing"
+             alt="an image of nothing"
             />
           ))}
         </div>
